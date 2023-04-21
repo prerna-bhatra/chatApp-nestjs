@@ -10,21 +10,47 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   async validateUser(username: string, password: string): Promise<any> {
-    const user = await this.usersService.getUser({ username });
-    if (!user) return null;
+    console.log({ username, password });
+    const user = await this.usersService.getUser({
+      username: username,
+    });
+    console.log('validate', user);
+    if (!user) {
+      return {
+        isError: true,
+      };
+    }
     const passwordValid = await bcrypt.compare(password, user.password);
     if (!user) {
-      throw new NotAcceptableException('could not find the user');
+      // throw new NotAcceptableException('could not find the user');
+      return {
+        isError: true,
+      };
     }
     if (user && passwordValid) {
       return user;
     }
-    return null;
+    return {
+      isError: true,
+    };
   }
   async login(user: any) {
-    const payload = { username: user.username, sub: user._id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    if (user.isError) {
+      return {
+        isError: true,
+        err: 'wrong credentilas ',
+      };
+    } else {
+      const payload = {
+        username: user.username,
+        sub: user._id,
+        fullname: user.fullname,
+      };
+      return {
+        isError: false,
+        err: 'no error',
+        result: this.jwtService.sign(payload),
+      };
+    }
   }
 }
