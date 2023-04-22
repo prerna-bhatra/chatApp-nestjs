@@ -28,6 +28,9 @@ export class MessagesController {
             as: 'msgOwner',
           },
         },
+        // {
+        //   $sort: { _id: 1 },
+        // },
       ]);
 
       return {

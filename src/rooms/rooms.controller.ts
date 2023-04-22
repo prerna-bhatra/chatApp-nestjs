@@ -9,7 +9,7 @@ export class RoomsController {
 
   @Get()
   async findAllRooms() {
-    const rooms = await this.model.find();
+    const rooms = await this.model.find().sort({ _id: -1 });
     return {
       isError: false,
       err: 'no err',
