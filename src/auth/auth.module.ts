@@ -13,7 +13,7 @@ import { UsersService } from 'src/users/users.service';
     UserModule,
     JwtModule.register({
       secret: 'SPOOKYSECRET',
-      signOptions: { expiresIn: '60s' },
+      // signOptions: { expiresIn: '60s' },
     }),
     MongooseModule.forFeature([{ name: 'user', schema: UserSchema }]),
   ],

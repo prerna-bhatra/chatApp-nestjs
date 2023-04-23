@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Post, Query, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message } from './messages.model';
+import { AuthgaurdService } from 'src/authgaurd/authgaurd.service';
 
 @Controller('api/messages')
 export class MessagesController {
@@ -9,6 +18,7 @@ export class MessagesController {
     @InjectModel(Message.name) private readonly model: Model<Message>,
   ) {}
 
+  @UseGuards(AuthgaurdService)
   @Get('/:roomId')
   async findByRoomId(@Param('roomId') roomId: string) {
     try {
@@ -46,12 +56,14 @@ export class MessagesController {
     }
   }
 
+  @UseGuards(AuthgaurdService)
   @Get()
   find(@Query('where') where) {
     where = JSON.parse(where || '{}');
     return this.model.find(where).populate('owner').exec();
   }
 
+  @UseGuards(AuthgaurdService)
   @Post()
   save(@Body() item: Message) {
     this.model.create(item);

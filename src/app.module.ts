@@ -11,6 +11,8 @@ import { MessagesGateway } from './messages/messages.gateway';
 import { Message, MessageSchema } from './messages/messages.model';
 import { Room, RoomSchema } from './rooms/rooms.model';
 import { User, UserSchema } from './users/users.model';
+import { AuthgaurdService } from './authgaurd/authgaurd.service';
+import { JwtModule } from '@nestjs/jwt';
 console.log('process.env.CHAT_DB', process.env.CHAT_DB);
 
 @Module({
@@ -18,6 +20,10 @@ console.log('process.env.CHAT_DB', process.env.CHAT_DB);
     MongooseModule.forRoot(
       'mongodb+srv://bhatraprerna1998:VLNvMFgERUMPjGiD@cluster0.jqkm6mn.mongodb.net/chat-app-nestjs?retryWrites=true&w=majority',
     ),
+    JwtModule.register({
+      secret: 'SPOOKYSECRET',
+      // signOptions: { expiresIn: '60s' },
+    }),
     MongooseModule.forFeature([
       { name: Message.name, schema: MessageSchema },
       { name: Room.name, schema: RoomSchema },
@@ -30,6 +36,6 @@ console.log('process.env.CHAT_DB', process.env.CHAT_DB);
     MessagesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MessagesGateway],
+  providers: [AppService, MessagesGateway, AuthgaurdService],
 })
 export class AppModule {}
